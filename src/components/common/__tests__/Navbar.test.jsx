@@ -2,7 +2,9 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { test, expect, vi, beforeEach } from "vitest";
 import Navbar from "../Navbar";
 
+// ---- mocks ----
 const mockNavigate = vi.fn();
+const mockLogout = vi.fn();
 
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
@@ -11,8 +13,6 @@ vi.mock("react-router-dom", async () => {
     useNavigate: () => mockNavigate,
   };
 });
-
-const mockLogout = vi.fn();
 
 vi.mock("../../../context/AuthContext", () => ({
   useAuth: () => ({
@@ -24,6 +24,8 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
+// ---------------- TESTS ----------------
+
 test("renders company logo and title", () => {
   render(<Navbar />);
 
@@ -32,10 +34,22 @@ test("renders company logo and title", () => {
   expect(screen.getByAltText(/company logo/i)).toBeInTheDocument();
 });
 
-test("shows user email and logout button", () => {
+test("renders desktop navigation items", () => {
   render(<Navbar />);
 
-  expect(screen.getByText("admin@test.com")).toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: /dashboard/i })
+  ).toBeInTheDocument();
+
+  expect(
+    screen.getByRole("button", { name: /manage employees/i })
+  ).toBeInTheDocument();
+});
+
+test("renders user email and logout button", () => {
+  render(<Navbar />);
+
+  expect(screen.getAllByText("admin@test.com").length).toBeGreaterThan(0);
 
   expect(screen.getByRole("button", { name: /logout/i })).toBeInTheDocument();
 });
@@ -43,26 +57,38 @@ test("shows user email and logout button", () => {
 test("logs out and navigates to login on logout click", () => {
   render(<Navbar />);
 
-  const logoutButton = screen.getByRole("button", {
-    name: /logout/i,
-  });
-
-  fireEvent.click(logoutButton);
+  fireEvent.click(screen.getByRole("button", { name: /logout/i }));
 
   expect(mockLogout).toHaveBeenCalledTimes(1);
   expect(mockNavigate).toHaveBeenCalledWith("/", { replace: true });
 });
 
-test("toggles mobile menu on hamburger click", () => {
+test("navigates to dashboard when dashboard button clicked", () => {
+  render(<Navbar />);
+
+  fireEvent.click(screen.getByRole("button", { name: /dashboard/i }));
+
+  expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
+});
+
+test("navigates to employees page when manage employees clicked", () => {
+  render(<Navbar />);
+
+  fireEvent.click(screen.getByRole("button", { name: /manage employees/i }));
+
+  expect(mockNavigate).toHaveBeenCalledWith("/employees");
+});
+
+test("opens and closes mobile menu using hamburger icon", () => {
   render(<Navbar />);
 
   const hamburger = screen.getByText("☰");
 
-  // Menu closed initially
-  expect(screen.queryByText("admin@test.com")).toBeInTheDocument(); // desktop
-
   fireEvent.click(hamburger);
 
-  // Mobile menu opens
   expect(screen.getAllByText("admin@test.com").length).toBeGreaterThan(1);
+
+  fireEvent.click(screen.getAllByText(/dashboard/i)[1]);
+
+  expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
 });
