@@ -3,15 +3,21 @@ import { employeeSchema } from "../../utils/employeeSchema";
 import { createEmptyEmployee } from "../../utils/employeeModel";
 import { useEmployees } from "../../context/EmployeeContext";
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const EmployeeForm = ({ editEmployee }) => {
-  const { addEmployee, updateEmployee } = useEmployees();
+const EmployeeForm = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const { employees, addEmployee, updateEmployee } = useEmployees();
+
+  const employeeToEdit = useMemo(() => {
+    if (!id) return null;
+    return employees.find((e) => String(e.id) === id);
+  }, [id, employees]);
 
   const initialValues = useMemo(
-    () => (editEmployee ? editEmployee : createEmptyEmployee()),
-    [editEmployee]
+    () => (employeeToEdit ? employeeToEdit : createEmptyEmployee()),
+    [employeeToEdit]
   );
 
   const formik = useFormik({
@@ -19,14 +25,10 @@ const EmployeeForm = ({ editEmployee }) => {
     validationSchema: employeeSchema,
     enableReinitialize: true,
     onSubmit: (values) => {
-      editEmployee ? updateEmployee(values) : addEmployee(values);
+      employeeToEdit ? updateEmployee(values) : addEmployee(values);
       navigate("/employees");
     },
   });
-
-  const handleCancel = () => {
-    navigate("/employees");
-  };
 
   const handleImage = (e) => {
     const file = e.target.files[0];
@@ -46,102 +48,130 @@ const EmployeeForm = ({ editEmployee }) => {
         className="bg-white w-full rounded-xl shadow-lg p-6"
       >
         <h2 className="text-2xl font-semibold mb-6">
-          {editEmployee ? "Edit Employee" : "Add Employee"}
+          {employeeToEdit ? "Edit Employee" : "Add Employee"}
         </h2>
 
-        {/* Grid */}
+        {/* GRID: 2 fields per row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Full Name */}
           <div>
-            <label className="text-sm font-medium">Full Name</label>
+            <label className="text-sm font-medium">
+              Full Name <span className="text-red-500">*</span>
+            </label>
             <input
               name="fullName"
               className="mt-1 w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
               value={formik.values.fullName}
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             />
-            {formik.errors.fullName && (
-              <p className="text-red-500 text-sm">{formik.errors.fullName}</p>
+            {formik.touched.fullName && formik.errors.fullName && (
+              <p className="text-red-500 text-xs mt-1">
+                {formik.errors.fullName}
+              </p>
             )}
           </div>
 
           {/* Gender */}
           <div>
-            <label className="text-sm font-medium">Gender</label>
+            <label className="text-sm font-medium">
+              Gender <span className="text-red-500">*</span>
+            </label>
             <select
               name="gender"
               className="mt-1 w-full border rounded-lg px-3 py-2"
               value={formik.values.gender}
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             >
               <option value="">Select</option>
               <option>Male</option>
               <option>Female</option>
             </select>
+            {formik.touched.gender && formik.errors.gender && (
+              <p className="text-red-500 text-xs mt-1">
+                {formik.errors.gender}
+              </p>
+            )}
           </div>
 
           {/* DOB */}
           <div>
-            <label className="text-sm font-medium">Date of Birth</label>
+            <label className="text-sm font-medium">
+              Date of Birth <span className="text-red-500">*</span>
+            </label>
             <input
               type="date"
               name="dob"
               className="mt-1 w-full border rounded-lg px-3 py-2"
               value={formik.values.dob}
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             />
+            {formik.touched.dob && formik.errors.dob && (
+              <p className="text-red-500 text-xs mt-1">{formik.errors.dob}</p>
+            )}
           </div>
 
           {/* State */}
           <div>
-            <label className="text-sm font-medium">State</label>
+            <label className="text-sm font-medium">
+              State <span className="text-red-500">*</span>
+            </label>
             <select
               name="state"
               className="mt-1 w-full border rounded-lg px-3 py-2"
               value={formik.values.state}
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             >
               <option value="">Select State</option>
               <option>Telangana</option>
               <option>Andhra Pradesh</option>
               <option>Karnataka</option>
             </select>
+            {formik.touched.state && formik.errors.state && (
+              <p className="text-red-500 text-xs mt-1">{formik.errors.state}</p>
+            )}
           </div>
         </div>
 
-        {/* Active */}
-        <div className="flex items-center gap-2 mt-4">
-          <input
-            type="checkbox"
-            checked={formik.values.active}
-            onChange={(e) => formik.setFieldValue("active", e.target.checked)}
-          />
-          <span className="text-sm">Active</span>
-        </div>
-
-        {/* Image */}
-        <div className="mt-4">
-          <label className="text-sm font-medium">Profile Image</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImage}
-            className="block mt-2"
-          />
-          {formik.values.image && (
-            <img
-              src={formik.values.image}
-              alt="preview"
-              className="mt-3 w-24 h-24 rounded object-cover border"
+        {/* Active + Image row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+          {/* Active */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={formik.values.active}
+              onChange={(e) => formik.setFieldValue("active", e.target.checked)}
             />
-          )}
+            <span className="text-sm">Active</span>
+          </div>
+
+          {/* Image */}
+          <div>
+            <label className="text-sm font-medium">Profile Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImage}
+              className="block mt-2"
+            />
+            {formik.values.image && (
+              <img
+                src={formik.values.image}
+                alt="preview"
+                className="mt-3 w-24 h-24 rounded object-cover border"
+              />
+            )}
+          </div>
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 mt-6">
+        <div className="flex justify-end gap-3 mt-8">
           <button
             type="button"
-            onClick={handleCancel}
+            onClick={() => navigate("/employees")}
             className="px-4 py-2 border rounded-lg hover:bg-gray-100"
           >
             Cancel
