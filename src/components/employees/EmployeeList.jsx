@@ -5,6 +5,7 @@ import EmployeeFilters from "./EmployeeFilters";
 import { useNavigate } from "react-router-dom";
 import { printEmployees } from "../../utils/printEmployees";
 import Pagination from "../common/Pagination";
+import { useUI } from "../../context/UIContext";
 
 const EmployeeList = () => {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ const EmployeeList = () => {
   const [search, setSearch] = useState("");
   const [gender, setGender] = useState("");
   const [status, setStatus] = useState("");
+  const { showLoading, hideLoading, showPopup, showConfirm } = useUI();
+
   const filteredEmployees = useMemo(() => {
     return employees.filter((e) => {
       const matchesSearch = e.fullName
@@ -32,12 +35,14 @@ const EmployeeList = () => {
   };
 
   const handleDelete = (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this employee?"
-    );
-    if (confirmed) {
-      deleteEmployee(id);
-    }
+    showConfirm("Are you sure you want to delete this employee?", () => {
+      showLoading("Deleting employee...");
+      setTimeout(() => {
+        deleteEmployee(id);
+        hideLoading();
+        showPopup("success", "Employee deleted successfully");
+      }, 800);
+    });
   };
 
   const PAGE_SIZE = 4;

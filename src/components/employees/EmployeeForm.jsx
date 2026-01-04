@@ -4,11 +4,13 @@ import { createEmptyEmployee } from "../../utils/employeeModel";
 import { useEmployees } from "../../context/EmployeeContext";
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useUI } from "../../context/UIContext";
 
 const EmployeeForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { employees, addEmployee, updateEmployee } = useEmployees();
+  const { showLoading, hideLoading, showPopup } = useUI();
 
   const employeeToEdit = useMemo(() => {
     if (!id) return null;
@@ -24,9 +26,23 @@ const EmployeeForm = () => {
     initialValues,
     validationSchema: employeeSchema,
     enableReinitialize: true,
-    onSubmit: (values) => {
-      employeeToEdit ? updateEmployee(values) : addEmployee(values);
-      navigate("/employees");
+    onSubmit: async (values) => {
+      showLoading(
+        employeeToEdit ? "Updating employee..." : "Adding employee..."
+      );
+
+      setTimeout(() => {
+        if (employeeToEdit) {
+          updateEmployee(values);
+          showPopup("success", "Employee updated successfully");
+        } else {
+          addEmployee(values);
+          showPopup("success", "Employee added successfully");
+        }
+
+        hideLoading();
+        navigate("/employees");
+      }, 1000);
     },
   });
 
