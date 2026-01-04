@@ -3,6 +3,7 @@ import { useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { mockUser } from "../mocks/auth.mock";
 import loginBg from "../assets/Images/Login Bacground.png";
+import { useUI } from "../context/UIContext";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const { showLoading, hideLoading, showPopup } = useUI();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,15 +30,26 @@ const Login = () => {
       return;
     }
 
-    if (email === mockUser.email && password === mockUser.password) {
-      login();
-      navigate("/dashboard", { replace: true });
-    } else {
-      setErrors({
-        email: "",
-        password: "*Invalid email or password",
-      });
-    }
+    showLoading("Logging in...");
+
+    setTimeout(() => {
+      if (email === mockUser.email && password === mockUser.password) {
+        login();
+
+        hideLoading();
+        showPopup("success", "Login successful");
+
+        navigate("/dashboard", { replace: true });
+      } else {
+        hideLoading();
+        showPopup("error", "Invalid email or password");
+
+        setErrors({
+          email: "",
+          password: "*Invalid email or password",
+        });
+      }
+    }, 1000);
   };
 
   if (isAuth) {
