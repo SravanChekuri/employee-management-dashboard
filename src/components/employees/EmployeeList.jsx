@@ -4,6 +4,7 @@ import EmployeeTable from "./EmployeeTable";
 import EmployeeFilters from "./EmployeeFilters";
 import { useNavigate } from "react-router-dom";
 import { printEmployees } from "../../utils/printEmployees";
+import Pagination from "../common/Pagination";
 
 const EmployeeList = () => {
   const navigate = useNavigate();
@@ -39,23 +40,48 @@ const EmployeeList = () => {
     }
   };
 
+  const PAGE_SIZE = 4;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(filteredEmployees.length / PAGE_SIZE);
+
+  const paginatedEmployees = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredEmployees.slice(start, start + PAGE_SIZE);
+  }, [filteredEmployees, currentPage]);
+
   return (
     <div className="space-y-4">
       <EmployeeFilters
         search={search}
         gender={gender}
         status={status}
-        onSearchChange={setSearch}
-        onGenderChange={setGender}
-        onStatusChange={setStatus}
+        onSearchChange={(v) => {
+          setSearch(v);
+          setCurrentPage(1);
+        }}
+        onGenderChange={(v) => {
+          setGender(v);
+          setCurrentPage(1);
+        }}
+        onStatusChange={(v) => {
+          setStatus(v);
+          setCurrentPage(1);
+        }}
         onCreate={() => navigate("/employees/new")}
         onPrint={handlePrint}
       />
 
       <EmployeeTable
-        employees={filteredEmployees}
+        employees={paginatedEmployees}
         onEdit={(e) => navigate(`/employees/${e.id}/edit`)}
         onDelete={handleDelete}
+      />
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
       />
     </div>
   );
