@@ -6,8 +6,8 @@ const Dashboard = () => {
   const active = employees.filter((e) => e.active).length;
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="p-6">
+    <div>
+      <div className="p-4">
         <h2 className="text-lg font-semibold mb-4">Employee Overview</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded shadow">

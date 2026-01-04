@@ -6,6 +6,7 @@ const EmployeeFilters = ({
   onGenderChange,
   onStatusChange,
   onCreate,
+  onPrint,
 }) => {
   return (
     <div className="bg-white p-4 rounded-lg shadow">
@@ -42,7 +43,13 @@ const EmployeeFilters = ({
         </select>
 
         {/* Create Button */}
-        <div className="md:ml-auto">
+        <div className="md:ml-auto flex gap-2">
+          <button
+            onClick={onPrint}
+            className="border px-4 py-2 rounded hover:bg-gray-100"
+          >
+            Print Results
+          </button>
           <button
             onClick={onCreate}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"

@@ -1,25 +1,4 @@
 const EmployeeTable = ({ employees, onEdit, onDelete }) => {
-  const handlePrint = (emp) => {
-    const win = window.open("", "_blank");
-    win.document.write(`
-      <html>
-        <head><title>Employee</title></head>
-        <body>
-          <h2>Employee Details</h2>
-          <p><b>ID:</b> ${emp.id}</p>
-          <p><b>Name:</b> ${emp.fullName}</p>
-          <p><b>Gender:</b> ${emp.gender}</p>
-          <p><b>DOB:</b> ${emp.dob}</p>
-          <p><b>State:</b> ${emp.state}</p>
-          <p><b>Status:</b> ${emp.active ? "Active" : "Inactive"}</p>
-          ${emp.image ? `<img src="${emp.image}" width="120" />` : ""}
-        </body>
-      </html>
-    `);
-    win.document.close();
-    win.print();
-  };
-
   return (
     <div className="overflow-x-auto bg-white rounded-lg shadow">
       <table className="min-w-full text-sm">
@@ -92,12 +71,6 @@ const EmployeeTable = ({ employees, onEdit, onDelete }) => {
                   className="text-red-600 hover:underline"
                 >
                   Delete
-                </button>
-                <button
-                  onClick={() => handlePrint(e)}
-                  className="text-gray-600 hover:underline"
-                >
-                  Print
                 </button>
               </td>
             </tr>

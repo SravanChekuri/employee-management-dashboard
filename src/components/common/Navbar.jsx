@@ -21,7 +21,10 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-[#0f2a44]/95 backdrop-blur shadow-md px-4 py-3">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div
+          className="flex items-center gap-3"
+          onClick={() => goTo("/dashboard")}
+        >
           <img
             src={logo}
             alt="Company Logo"
