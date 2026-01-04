@@ -55,11 +55,12 @@ const EmployeeForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Full Name */}
           <div>
-            <label className="text-sm font-medium">
+            <label htmlFor="fullName" className="text-sm font-medium">
               Full Name <span className="text-red-500">*</span>
             </label>
             <input
               name="fullName"
+              id="fullName"
               className="mt-1 w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
               value={formik.values.fullName}
               onChange={formik.handleChange}
@@ -74,11 +75,12 @@ const EmployeeForm = () => {
 
           {/* Gender */}
           <div>
-            <label className="text-sm font-medium">
+            <label htmlFor="gender" className="text-sm font-medium">
               Gender <span className="text-red-500">*</span>
             </label>
             <select
               name="gender"
+              id="gender"
               className="mt-1 w-full border rounded-lg px-3 py-2"
               value={formik.values.gender}
               onChange={formik.handleChange}
@@ -97,12 +99,13 @@ const EmployeeForm = () => {
 
           {/* DOB */}
           <div>
-            <label className="text-sm font-medium">
+            <label htmlFor="dob" className="text-sm font-medium">
               Date of Birth <span className="text-red-500">*</span>
             </label>
             <input
               type="date"
               name="dob"
+              id="dob"
               className="mt-1 w-full border rounded-lg px-3 py-2"
               value={formik.values.dob}
               onChange={formik.handleChange}
@@ -115,11 +118,12 @@ const EmployeeForm = () => {
 
           {/* State */}
           <div>
-            <label className="text-sm font-medium">
+            <label htmlFor="state" className="text-sm font-medium">
               State <span className="text-red-500">*</span>
             </label>
             <select
               name="state"
+              id="state"
               className="mt-1 w-full border rounded-lg px-3 py-2"
               value={formik.values.state}
               onChange={formik.handleChange}
@@ -150,8 +154,11 @@ const EmployeeForm = () => {
 
           {/* Image */}
           <div>
-            <label className="text-sm font-medium">Profile Image</label>
+            <label htmlFor="image" className="text-sm font-medium">
+              Profile Image
+            </label>
             <input
+              id="image"
               type="file"
               accept="image/*"
               onChange={handleImage}
@@ -171,6 +178,7 @@ const EmployeeForm = () => {
         <div className="flex justify-end gap-3 mt-8">
           <button
             type="button"
+            role="button"
             onClick={() => navigate("/employees")}
             className="px-4 py-2 border rounded-lg hover:bg-gray-100"
           >
@@ -178,6 +186,7 @@ const EmployeeForm = () => {
           </button>
           <button
             type="submit"
+            role="button"
             className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             Save
