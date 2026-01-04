@@ -55,8 +55,11 @@ const Login = () => {
         <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Email</label>
+          <label htmlFor="email" className="block text-sm font-medium mb-1">
+            Email
+          </label>
           <input
+            id="email"
             type="email"
             value={email}
             onChange={(e) => {
@@ -72,8 +75,11 @@ const Login = () => {
         </div>
 
         <div className="mb-4 relative">
-          <label className="block text-sm font-medium mb-1">Password</label>
+          <label htmlFor="password" className="block text-sm font-medium mb-1">
+            Password
+          </label>
           <input
+            id="password"
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => {
