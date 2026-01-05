@@ -7,13 +7,15 @@ import { printEmployees } from "../../utils/printEmployees";
 import Pagination from "../common/Pagination";
 import { useUI } from "../../context/UIContext";
 
+const PAGE_SIZE = 4;
 const EmployeeList = () => {
   const navigate = useNavigate();
   const { employees = [], deleteEmployee } = useEmployees();
+  const { showLoading, hideLoading, showPopup, showConfirm } = useUI();
   const [search, setSearch] = useState("");
   const [gender, setGender] = useState("");
   const [status, setStatus] = useState("");
-  const { showLoading, hideLoading, showPopup, showConfirm } = useUI();
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredEmployees = useMemo(() => {
     return employees.filter((e) => {
@@ -30,30 +32,33 @@ const EmployeeList = () => {
     });
   }, [employees, search, gender, status]);
 
-  const handlePrint = () => {
-    printEmployees(filteredEmployees);
-  };
+  const totalPages = Math.ceil(filteredEmployees.length / PAGE_SIZE);
 
   const handleDelete = (id) => {
     showConfirm("Are you sure you want to delete this employee?", () => {
       showLoading("Deleting employee...");
       setTimeout(() => {
         deleteEmployee(id);
+        setCurrentPage((prev) => {
+          const newTotalPages = Math.ceil(
+            (filteredEmployees.length - 1) / PAGE_SIZE
+          );
+          return Math.min(prev, Math.max(newTotalPages, 1));
+        });
         hideLoading();
         showPopup("success", "Employee deleted successfully");
       }, 800);
     });
   };
 
-  const PAGE_SIZE = 4;
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const totalPages = Math.ceil(filteredEmployees.length / PAGE_SIZE);
-
   const paginatedEmployees = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE;
     return filteredEmployees.slice(start, start + PAGE_SIZE);
   }, [filteredEmployees, currentPage]);
+
+  const handlePrint = () => {
+    printEmployees(filteredEmployees);
+  };
 
   return (
     <div className="space-y-4">
