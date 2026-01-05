@@ -144,3 +144,7 @@ npm run dev
 ```
 
 #### The application will be available at: http://localhost:5173
+
+## Screen Recording
+
+🎥 Screen Recording Link: https://github.com/user-attachments/assets/17bfc503-ee58-4003-b07a-8412773d7a25
