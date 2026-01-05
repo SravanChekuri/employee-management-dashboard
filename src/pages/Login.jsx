@@ -37,12 +37,12 @@ const Login = () => {
         login();
 
         hideLoading();
-        showPopup("success", "Login successful");
+        showPopup("success", "Login successful ✅");
 
         navigate("/dashboard", { replace: true });
       } else {
         hideLoading();
-        showPopup("error", "Invalid email or password");
+        showPopup("error", "❌ Invalid email or password");
 
         setErrors({
           email: "",

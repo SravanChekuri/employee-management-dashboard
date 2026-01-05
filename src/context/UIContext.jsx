@@ -43,7 +43,15 @@ export const UIProvider = ({ children }) => {
       )}
 
       {popup && (
-        <div className="fixed bottom-6 right-6 bg-green-600 text-white px-4 py-2 rounded">
+        <div
+          className={`fixed bottom-6 right-6 text-white px-4 py-2 rounded ${
+            popup.type === "success"
+              ? "bg-green-600"
+              : popup.type === "error"
+              ? "bg-red-600"
+              : "bg-blue-600"
+          }`}
+        >
           {popup.message}
         </div>
       )}
