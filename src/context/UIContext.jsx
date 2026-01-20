@@ -48,8 +48,8 @@ export const UIProvider = ({ children }) => {
             popup.type === "success"
               ? "bg-green-600"
               : popup.type === "error"
-              ? "bg-red-600"
-              : "bg-blue-600"
+                ? "bg-red-600"
+                : "bg-blue-600"
           }`}
         >
           {popup.message}

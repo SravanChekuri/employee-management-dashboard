@@ -41,7 +41,7 @@ const EmployeeList = () => {
         deleteEmployee(id);
         setCurrentPage((prev) => {
           const newTotalPages = Math.ceil(
-            (filteredEmployees.length - 1) / PAGE_SIZE
+            (filteredEmployees.length - 1) / PAGE_SIZE,
           );
           return Math.min(prev, Math.max(newTotalPages, 1));
         });

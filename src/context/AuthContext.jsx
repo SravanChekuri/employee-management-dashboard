@@ -4,7 +4,7 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [isAuth, setIsAuth] = useState(
-    () => localStorage.getItem("auth") === "true"
+    () => localStorage.getItem("auth") === "true",
   );
 
   const login = () => {

@@ -19,7 +19,7 @@ const EmployeeForm = () => {
 
   const initialValues = useMemo(
     () => (employeeToEdit ? employeeToEdit : createEmptyEmployee()),
-    [employeeToEdit]
+    [employeeToEdit],
   );
 
   const formik = useFormik({
@@ -28,7 +28,7 @@ const EmployeeForm = () => {
     enableReinitialize: true,
     onSubmit: async (values) => {
       showLoading(
-        employeeToEdit ? "Updating employee..." : "Adding employee..."
+        employeeToEdit ? "Updating employee..." : "Adding employee...",
       );
 
       setTimeout(() => {
